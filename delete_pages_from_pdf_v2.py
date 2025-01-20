@@ -3,6 +3,7 @@ import os
 import shutil
 import logging
 from datetime import datetime
+import getpass  # <--- Para obtener el username
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -13,8 +14,7 @@ from PyQt5.QtCore import Qt
 
 import PyPDF2
 
-# Librería para enviar correo usando Outlook
-# (pywin32)
+# Librería para enviar correo usando Outlook (pywin32)
 try:
     import win32com.client as win32
 except ImportError:
@@ -81,7 +81,7 @@ class PDFManager(QMainWindow):
         self.layout_inputs.addWidget(self.label_solicitante)
         self.layout_inputs.addWidget(self.input_solicitante)
         
-        # Agregar los botones (podrías también separarlos en otro layout)
+        # Agregar los botones
         self.layout_inputs.addWidget(self.btn_buscar)
         self.layout_inputs.addWidget(self.btn_realizar)
         self.layout_inputs.addWidget(self.btn_abrir_pdf)
@@ -166,7 +166,7 @@ class PDFManager(QMainWindow):
         
         letra = "E"
         
-        # Ruta en la red
+        # Ruta en la red (ajusta según tu entorno)
         root_path = r"\\fs01\Digitalizacion_Jubilaciones"
         anio_folder = anio_str
         letra_folder = letra
@@ -380,9 +380,11 @@ class PDFManager(QMainWindow):
             # Enviar correo de confirmación si hay solicitante
             solicitante = self.input_solicitante.text().strip()
             if solicitante:
-                # Armar correo (solicitante@insssep.gov.ar)
                 correo_destino = f"{solicitante}@insssep.gov.ar"
-                self.enviar_correo_confirmacion(correo_destino, pdf_path, inicio, fin)
+            else:
+                correo_destino = ""  # Si no hay solicitante, quedará vacío (luego validamos)
+            
+            self.enviar_correo_confirmacion(correo_destino, pdf_path, inicio, fin)
             
             # Mostrar el contenido del log al finalizar
             self.mostrar_contenido_log()
@@ -401,6 +403,11 @@ class PDFManager(QMainWindow):
     def enviar_correo_confirmacion(self, destinatario, pdf_path, inicio, fin):
         """
         Envía un correo de confirmación (vía Outlook) indicando que se borraron las fojas.
+        
+        - Se detecta el username local. 
+        - Por defecto se va a enviar a wbenitez y abouvier, 
+          excepto al usuario que coincida con el username local.
+        - Además, se incluye el 'destinatario' (campo 'Solicitante') si no está vacío.
         """
         if not win32:
             # Si no está instalado pywin32, no se puede enviar correo
@@ -408,13 +415,38 @@ class PDFManager(QMainWindow):
             return
         
         try:
+            # 1) Detectar el nombre de usuario de la PC:
+            username_local = getpass.getuser().lower()  # ejemplo: "wbenitez" o "abouvier"
+            
+            # 2) Lista de destinatarios por defecto:
+            default_recipients = ["wbenitez@insssep.gov.ar", "abouvier@insssep.gov.ar"]
+            
+            # 3) Remover de esa lista el que coincida con el username local:
+            correo_local = f"{username_local}@insssep.gov.ar"
+            
+            # Si está en la lista, lo quitamos
+            if correo_local in default_recipients:
+                default_recipients.remove(correo_local)
+            
+            # 4) Agregar el 'destinatario' (si no está vacío) a la lista
+            #    Evitando duplicados por si coincide
+            if destinatario and destinatario not in default_recipients:
+                default_recipients.append(destinatario)
+            
+            # Si al final no hay nadie en default_recipients, no se hace nada
+            if not default_recipients:
+                self.print_log("No hay destinatarios a quien enviar el correo.", level="warning")
+                return
+            
+            # Crear la instancia de Outlook
             outlook = win32.Dispatch("Outlook.Application")
             mail = outlook.CreateItem(0)  # 0 = olMailItem
-            mail.To = destinatario
+            
+            # Unir todos los destinatarios en un string separado por ;
+            mail.To = ";".join(default_recipients)
             mail.Subject = "Confirmación de Borrado de Fojas"
             
-            expediente = os.path.basename(os.path.dirname(pdf_path))  # Extrae el nombre de la carpeta, que corresponde al número del expediente
-
+            expediente = os.path.basename(os.path.dirname(pdf_path))  # Extrae la carpeta (nro expediente)
             cuerpo = (
                 f"Estimado/a,\n\n"
                 f"Se han borrado las fojas {inicio}-{fin} del expediente:\n"
@@ -423,15 +455,13 @@ class PDFManager(QMainWindow):
                 f"Saludos,\n"
                 f"Equipo de Automatización"
             )
-
             
             mail.Body = cuerpo
-            # Si deseas enviar en HTML:
-            # mail.HTMLBody = "<p>...</p>"
-            
             mail.Send()
             
-            self.print_log(f"Correo de confirmación enviado a: {destinatario}")
+            self.print_log(
+                f"Correo de confirmación enviado a: {', '.join(default_recipients)}"
+            )
         
         except Exception as e:
             self.print_log(f"No se pudo enviar el correo a {destinatario}: {str(e)}", level="error")

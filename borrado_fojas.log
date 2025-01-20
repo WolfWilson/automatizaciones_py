@@ -95,3 +95,30 @@ Verifica que el archivo no esté abierto en otro programa y que tengas permisos d
 2025-01-17 12:55:09,100 - INFO - === FIN DEL LOG ===
 
 2025-01-20 08:01:38,893 - INFO - Aplicación iniciada correctamente.
+2025-01-20 09:05:36,403 - INFO - Aplicación iniciada correctamente.
+2025-01-20 09:06:02,214 - INFO - Aplicación iniciada correctamente.
+2025-01-20 10:54:09,911 - INFO - Aplicación iniciada correctamente.
+2025-01-20 10:54:27,393 - ERROR - No se encontró el archivo en la ruta: \\fs01\Digitalizacion_Jubilaciones\2024\E\E-000666-2024\E-000666-2024.pdf
+2025-01-20 11:49:59,224 - INFO - Aplicación iniciada correctamente.
+2025-01-20 11:51:03,316 - ERROR - No se encontró el archivo en la ruta: \\fs01\Digitalizacion_Jubilaciones\2024\E\E-012345-2024\E-012345-2024.pdf
+2025-01-20 11:51:09,666 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf' existe. Páginas: 10
+2025-01-20 11:51:10,962 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 11:51:32,339 - INFO - Backup creado: C:\Bk_de_Expedientes\E-012345-2025_20250120_115132.pdf
+2025-01-20 11:51:32,589 - INFO - Fojas 9-10 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
+2025-01-20 11:51:35,857 - ERROR - No se pudo enviar el correo a abouvier@insssep.gov.ar: [Errno 11001] getaddrinfo failed
+2025-01-20 11:51:35,859 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
+2025-01-20 11:52:01,407 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf' existe. Páginas: 8
+2025-01-20 11:52:02,488 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 11:54:58,862 - INFO - Aplicación iniciada correctamente.
+2025-01-20 11:55:20,243 - ERROR - No se encontró el archivo en la ruta: \\fs01\Digitalizacion_Jubilaciones\2024\E\E-012345-2024\E-012345-2024.pdf
+2025-01-20 11:55:25,927 - INFO - Backup creado: C:\Bk_de_Expedientes\E-012345-2025_20250120_115525.pdf
+2025-01-20 11:55:26,639 - INFO - Fojas 7-8 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
+2025-01-20 11:56:49,042 - INFO - Correo de confirmación enviado a: abouvier@insssep.gov.ar
+2025-01-20 11:56:49,051 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
+2025-01-20 12:20:18,163 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:20:45,912 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf' existe. Páginas: 6
+2025-01-20 12:20:47,129 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 12:21:38,538 - INFO - Backup creado: C:\Bk_de_Expedientes\E-012345-2025_20250120_122138.pdf
+2025-01-20 12:21:38,766 - INFO - Fojas 5-6 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
+2025-01-20 12:21:53,031 - INFO - Correo de confirmación enviado a: abouvier@insssep.gov.ar, cgianneschi@insssep.gov.ar
+2025-01-20 12:21:53,041 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
