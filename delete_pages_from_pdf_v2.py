@@ -3,7 +3,6 @@ import os
 import shutil
 import logging
 from datetime import datetime
-import getpass  # <--- Para obtener el username
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -11,15 +10,15 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QMessageBox
 )
 from PyQt5.QtCore import Qt
-
 import PyPDF2
 
-# Librería para enviar correo usando Outlook (pywin32)
+# Importamos el módulo de estilos
+import Modules.style_borrado_expte as style_borrado
+
 try:
     import win32com.client as win32
 except ImportError:
     win32 = None
-    # Si no se encuentra, puedes mostrar un warning o manejarlo.
 
 
 class PDFManager(QMainWindow):
@@ -27,7 +26,8 @@ class PDFManager(QMainWindow):
         super().__init__()
         
         self.setWindowTitle("Gestor de Expedientes - Borrar Fojas de PDF")
-        self.setGeometry(200, 200, 900, 650)
+        self.setGeometry(200, 200, 1300, 350)  # x, y, ancho, alto
+        self.setMinimumSize(1000, 600)  # Evitar que la ventana se haga demasiado pequeña
         
         # Widget central
         self.central_widget = QWidget()
@@ -41,18 +41,20 @@ class PDFManager(QMainWindow):
         self.layout_inputs = QHBoxLayout()
         
         # 1) Número de Expediente (hasta 6 dígitos)
-        self.label_numero = QLabel("Número (6 dígitos):")
+        self.label_numero = QLabel("Número:")
         self.input_numero = QLineEdit()
-        self.input_numero.setPlaceholderText("Ej: 17399 -> 017399")
+        self.input_numero.setPlaceholderText("Ej: 12345 -> 012345")
         
         # 2) Año (4 dígitos)
-        self.label_anio = QLabel("Año (4 díg):")
+        self.label_anio = QLabel("Año:")
         self.input_anio = QLineEdit()
-        self.input_anio.setPlaceholderText("Ej: 2023")
+        self.input_anio.setPlaceholderText("Ej: 2024")
         
         # 3) Rango de fojas a borrar (por ejemplo "22-25")
-        self.label_fojas = QLabel("Fojas (Ej: 22-25):")
+        self.label_fojas = QLabel("Fojas a Eliminar:")  # Asegúrate de definir la etiqueta
         self.input_fojas = QLineEdit()
+        self.input_fojas.setPlaceholderText("Ej: 22-25:")
+        self.input_fojas.setObjectName("input_fojas")  # Asigna el nombre de objeto para aplicar estilo específico
         
         # 4) Solicitante (opcional)
         self.label_solicitante = QLabel("Solicitante:")
@@ -76,7 +78,7 @@ class PDFManager(QMainWindow):
         self.layout_inputs.addWidget(self.input_numero)
         self.layout_inputs.addWidget(self.label_anio)
         self.layout_inputs.addWidget(self.input_anio)
-        self.layout_inputs.addWidget(self.label_fojas)
+        self.layout_inputs.addWidget(self.label_fojas)  # Ahora la variable existe
         self.layout_inputs.addWidget(self.input_fojas)
         self.layout_inputs.addWidget(self.label_solicitante)
         self.layout_inputs.addWidget(self.input_solicitante)
@@ -166,7 +168,7 @@ class PDFManager(QMainWindow):
         
         letra = "E"
         
-        # Ruta en la red (ajusta según tu entorno)
+        # Ruta en la red
         root_path = r"\\fs01\Digitalizacion_Jubilaciones"
         anio_folder = anio_str
         letra_folder = letra
@@ -380,11 +382,9 @@ class PDFManager(QMainWindow):
             # Enviar correo de confirmación si hay solicitante
             solicitante = self.input_solicitante.text().strip()
             if solicitante:
+                # Armar correo (solicitante@insssep.gov.ar)
                 correo_destino = f"{solicitante}@insssep.gov.ar"
-            else:
-                correo_destino = ""  # Si no hay solicitante, quedará vacío (luego validamos)
-            
-            self.enviar_correo_confirmacion(correo_destino, pdf_path, inicio, fin)
+                self.enviar_correo_confirmacion(correo_destino, pdf_path, inicio, fin)
             
             # Mostrar el contenido del log al finalizar
             self.mostrar_contenido_log()
@@ -403,11 +403,6 @@ class PDFManager(QMainWindow):
     def enviar_correo_confirmacion(self, destinatario, pdf_path, inicio, fin):
         """
         Envía un correo de confirmación (vía Outlook) indicando que se borraron las fojas.
-        
-        - Se detecta el username local. 
-        - Por defecto se va a enviar a wbenitez y abouvier, 
-          excepto al usuario que coincida con el username local.
-        - Además, se incluye el 'destinatario' (campo 'Solicitante') si no está vacío.
         """
         if not win32:
             # Si no está instalado pywin32, no se puede enviar correo
@@ -415,35 +410,9 @@ class PDFManager(QMainWindow):
             return
         
         try:
-            # 1) Detectar el nombre de usuario de la PC:
-            username_local = getpass.getuser().lower()  # ejemplo: "wbenitez" o "abouvier"
-            
-            # 2) Lista de destinatarios por defecto:
-            default_recipients = ["wbenitez@insssep.gov.ar", "abouvier@insssep.gov.ar"]
-            
-            # 3) Remover de esa lista el que coincida con el username local:
-            correo_local = f"{username_local}@insssep.gov.ar"
-            
-            # Si está en la lista, lo quitamos
-            if correo_local in default_recipients:
-                default_recipients.remove(correo_local)
-            
-            # 4) Agregar el 'destinatario' (si no está vacío) a la lista
-            #    Evitando duplicados por si coincide
-            if destinatario and destinatario not in default_recipients:
-                default_recipients.append(destinatario)
-            
-            # Si al final no hay nadie en default_recipients, no se hace nada
-            if not default_recipients:
-                self.print_log("No hay destinatarios a quien enviar el correo.", level="warning")
-                return
-            
-            # Crear la instancia de Outlook
             outlook = win32.Dispatch("Outlook.Application")
             mail = outlook.CreateItem(0)  # 0 = olMailItem
-            
-            # Unir todos los destinatarios en un string separado por ;
-            mail.To = ";".join(default_recipients)
+            mail.To = destinatario
             mail.Subject = "Confirmación de Borrado de Fojas"
             
             expediente = os.path.basename(os.path.dirname(pdf_path))  # Extrae la carpeta (nro expediente)
@@ -459,9 +428,7 @@ class PDFManager(QMainWindow):
             mail.Body = cuerpo
             mail.Send()
             
-            self.print_log(
-                f"Correo de confirmación enviado a: {', '.join(default_recipients)}"
-            )
+            self.print_log(f"Correo de confirmación enviado a: {destinatario}")
         
         except Exception as e:
             self.print_log(f"No se pudo enviar el correo a {destinatario}: {str(e)}", level="error")
@@ -486,6 +453,10 @@ class PDFManager(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    
+    # Aplicar la hoja de estilos proveniente del módulo
+    app.setStyleSheet(style_borrado.light_theme)
+    
     ventana = PDFManager()
     ventana.show()
     sys.exit(app.exec_())

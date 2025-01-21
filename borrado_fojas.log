@@ -122,3 +122,44 @@ Verifica que el archivo no esté abierto en otro programa y que tengas permisos d
 2025-01-20 12:21:38,766 - INFO - Fojas 5-6 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
 2025-01-20 12:21:53,031 - INFO - Correo de confirmación enviado a: abouvier@insssep.gov.ar, cgianneschi@insssep.gov.ar
 2025-01-20 12:21:53,041 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
+2025-01-20 12:33:12,707 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:35:50,582 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf' existe. Páginas: 4
+2025-01-20 12:35:52,994 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 12:36:19,070 - INFO - Backup creado: C:\Bk_de_Expedientes\E-012345-2025_20250120_123619.pdf
+2025-01-20 12:36:19,898 - INFO - Fojas 3-4 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
+2025-01-20 12:36:21,775 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
+2025-01-20 12:36:28,438 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf' existe. Páginas: 2
+2025-01-20 12:36:29,748 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 12:36:43,440 - INFO - Backup creado: C:\Bk_de_Expedientes\E-012345-2025_20250120_123643.pdf
+2025-01-20 12:36:43,570 - INFO - Fojas 1-2 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
+2025-01-20 12:36:55,650 - INFO - Correo de confirmación enviado a: abouvier@insssep.gov.ar
+2025-01-20 12:36:55,656 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
+2025-01-20 12:37:46,271 - ERROR - No se encontró el archivo en la ruta: \\fs01\Digitalizacion_Jubilaciones\2024\E\E-000001-2024\E-000001-2024.pdf
+2025-01-20 12:38:12,787 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-000001-2025\E-000001-2025.pdf' existe. Páginas: 10
+2025-01-20 12:38:14,276 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 12:40:46,527 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-000001-2025\E-000001-2025.pdf' existe. Páginas: 10
+2025-01-20 12:40:48,124 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 12:40:55,494 - INFO - Abriendo PDF: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-000001-2025\E-000001-2025.pdf
+2025-01-20 12:46:32,544 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:46:51,657 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2025\E\E-000001-2025\E-000001-2025.pdf' existe. Páginas: 10
+2025-01-20 12:46:53,404 - INFO - Datos portada => Nro: 535-010125-1, Iniciado: SANCHEZ RITA TOMASA, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 27230074866
+2025-01-20 12:47:08,884 - INFO - Abriendo PDF: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-000001-2025\E-000001-2025.pdf
+2025-01-20 12:54:36,255 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:54:49,146 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:55:23,055 - ERROR - No se encontró el archivo en la ruta: \\fs01\Digitalizacion_Jubilaciones\2024\E\E-000001-2024\E-000001-2024.pdf
+2025-01-20 12:55:31,091 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:56:13,697 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:56:34,700 - INFO - Aplicación iniciada correctamente.
+2025-01-20 12:58:15,632 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:00:33,543 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:02:51,722 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:04:58,810 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:05:12,724 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:05:19,223 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:05:31,632 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:06:50,073 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:07:07,069 - ERROR - No se encontró el archivo en la ruta: \\fs01\Digitalizacion_Jubilaciones\2025\E\E-012345-2025\E-012345-2025.pdf
+2025-01-20 13:07:32,829 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:08:30,680 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:09:01,051 - INFO - Aplicación iniciada correctamente.
+2025-01-20 13:10:20,139 - INFO - Aplicación iniciada correctamente.
