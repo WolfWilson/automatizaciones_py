@@ -10,16 +10,15 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QMessageBox
 )
 from PyQt5.QtCore import Qt
-
 import PyPDF2
 
-# Librería para enviar correo usando Outlook
-# (pywin32)
+# Importamos el módulo de estilos
+import Modules.style_borrado_expte as style_borrado
+
 try:
     import win32com.client as win32
 except ImportError:
     win32 = None
-    # Si no se encuentra, puedes mostrar un warning o manejarlo.
 
 
 class PDFManager(QMainWindow):
@@ -27,7 +26,8 @@ class PDFManager(QMainWindow):
         super().__init__()
         
         self.setWindowTitle("Gestor de Expedientes - Borrar Fojas de PDF")
-        self.setGeometry(200, 200, 900, 650)
+        self.setGeometry(200, 200, 1300, 350)  # x, y, ancho, alto
+        self.setMinimumSize(1000, 600)  # Evitar que la ventana se haga demasiado pequeña
         
         # Widget central
         self.central_widget = QWidget()
@@ -41,18 +41,20 @@ class PDFManager(QMainWindow):
         self.layout_inputs = QHBoxLayout()
         
         # 1) Número de Expediente (hasta 6 dígitos)
-        self.label_numero = QLabel("Número (6 dígitos):")
+        self.label_numero = QLabel("Número:")
         self.input_numero = QLineEdit()
-        self.input_numero.setPlaceholderText("Ej: 17399 -> 017399")
+        self.input_numero.setPlaceholderText("Ej: 12345 -> 012345")
         
         # 2) Año (4 dígitos)
-        self.label_anio = QLabel("Año (4 díg):")
+        self.label_anio = QLabel("Año:")
         self.input_anio = QLineEdit()
-        self.input_anio.setPlaceholderText("Ej: 2023")
+        self.input_anio.setPlaceholderText("Ej: 2024")
         
         # 3) Rango de fojas a borrar (por ejemplo "22-25")
-        self.label_fojas = QLabel("Fojas (Ej: 22-25):")
+        self.label_fojas = QLabel("Fojas a Eliminar:")  # Asegúrate de definir la etiqueta
         self.input_fojas = QLineEdit()
+        self.input_fojas.setPlaceholderText("Ej: 22-25:")
+        self.input_fojas.setObjectName("input_fojas")  # Asigna el nombre de objeto para aplicar estilo específico
         
         # 4) Solicitante (opcional)
         self.label_solicitante = QLabel("Solicitante:")
@@ -76,12 +78,12 @@ class PDFManager(QMainWindow):
         self.layout_inputs.addWidget(self.input_numero)
         self.layout_inputs.addWidget(self.label_anio)
         self.layout_inputs.addWidget(self.input_anio)
-        self.layout_inputs.addWidget(self.label_fojas)
+        self.layout_inputs.addWidget(self.label_fojas)  # Ahora la variable existe
         self.layout_inputs.addWidget(self.input_fojas)
         self.layout_inputs.addWidget(self.label_solicitante)
         self.layout_inputs.addWidget(self.input_solicitante)
         
-        # Agregar los botones (podrías también separarlos en otro layout)
+        # Agregar los botones
         self.layout_inputs.addWidget(self.btn_buscar)
         self.layout_inputs.addWidget(self.btn_realizar)
         self.layout_inputs.addWidget(self.btn_abrir_pdf)
@@ -413,8 +415,7 @@ class PDFManager(QMainWindow):
             mail.To = destinatario
             mail.Subject = "Confirmación de Borrado de Fojas"
             
-            expediente = os.path.basename(os.path.dirname(pdf_path))  # Extrae el nombre de la carpeta, que corresponde al número del expediente
-
+            expediente = os.path.basename(os.path.dirname(pdf_path))  # Extrae la carpeta (nro expediente)
             cuerpo = (
                 f"Estimado/a,\n\n"
                 f"Se han borrado las fojas {inicio}-{fin} del expediente:\n"
@@ -423,12 +424,8 @@ class PDFManager(QMainWindow):
                 f"Saludos,\n"
                 f"Equipo de Automatización"
             )
-
             
             mail.Body = cuerpo
-            # Si deseas enviar en HTML:
-            # mail.HTMLBody = "<p>...</p>"
-            
             mail.Send()
             
             self.print_log(f"Correo de confirmación enviado a: {destinatario}")
@@ -456,6 +453,10 @@ class PDFManager(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    
+    # Aplicar la hoja de estilos proveniente del módulo
+    app.setStyleSheet(style_borrado.light_theme)
+    
     ventana = PDFManager()
     ventana.show()
     sys.exit(app.exec_())

@@ -1,0 +1,1 @@
+#le indica al intérprete de Python que el directorio package contiene un módul
