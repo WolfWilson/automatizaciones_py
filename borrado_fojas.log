@@ -176,3 +176,14 @@ Verifica que el archivo no esté abierto en otro programa y que tengas permisos d
 2025-01-23 08:29:41,871 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
 2025-01-23 08:37:55,763 - INFO - Aplicación iniciada correctamente.
 2025-01-23 08:38:02,537 - INFO - Aplicación iniciada correctamente.
+2025-01-23 12:27:15,264 - INFO - Aplicación iniciada correctamente.
+2025-01-23 12:28:27,038 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2023\E\E-030937-2023\E-030937-2023.pdf' existe. Páginas: 30
+2025-01-23 12:28:28,839 - INFO - Datos portada => Nro: 535-281123-30937, Iniciado: GOMEZ ARMANDO, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 23228399469
+2025-01-23 12:28:53,901 - INFO - Backup creado: C:\Bk_de_Expedientes\E-030937-2023_20250123_122853.pdf
+2025-01-23 12:28:56,861 - INFO - Fojas 30-30 eliminadas correctamente en: \\fs01\Digitalizacion_Jubilaciones\2023\E\E-030937-2023\E-030937-2023.pdf
+2025-01-23 12:29:25,027 - INFO - Correo de confirmación enviado a: fdegregorio@insssep.gov.ar
+2025-01-23 12:29:25,317 - ERROR - Error al leer el log: 'utf-8' codec can't decode byte 0xf3 in position 41: invalid continuation byte
+2025-01-23 12:29:37,903 - INFO - El archivo '\\fs01\Digitalizacion_Jubilaciones\2023\E\E-030937-2023\E-030937-2023.pdf' existe. Páginas: 29
+2025-01-23 12:29:39,206 - INFO - Datos portada => Nro: 535-281123-30937, Iniciado: GOMEZ ARMANDO, Extracto: SOLICITA Jubilación Ordinaria Móvil Docente TRAMITE ON LINE. CUIL: 23228399469
+2025-01-23 12:29:40,966 - INFO - Abriendo PDF: \\fs01\Digitalizacion_Jubilaciones\2023\E\E-030937-2023\E-030937-2023.pdf
+2025-01-23 12:33:36,016 - INFO - Aplicación iniciada correctamente.

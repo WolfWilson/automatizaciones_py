@@ -9,8 +9,14 @@ from datetime import datetime
 def get_db_connection():
     server = 'sql01'
     database = 'Gestion'
-    conn = pyodbc.connect(f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes;')
+    conn = pyodbc.connect(
+        f'DRIVER={{ODBC Driver 17 for SQL Server}};'
+        f'SERVER={server};'
+        f'DATABASE={database};'
+        f'Trusted_Connection=yes;'
+    )
     return conn
+
 
 # Función para copiar archivos PDF
 def copy_files():
@@ -28,6 +34,7 @@ def copy_files():
                     shutil.copy(full_file_name, dest_dir)
                     print(f'Archivo {file} copiado a {dest_dir}')
 
+
 # Función para extraer texto de PDF usando PyPDF2
 def extract_text_from_pdf(pdf_path):
     try:
@@ -35,10 +42,11 @@ def extract_text_from_pdf(pdf_path):
             reader = PyPDF2.PdfReader(file)
             text = ''
             for page_num in range(len(reader.pages)):
-                text += reader.pages[page_num].extract_text()
+                text += reader.pages[page_num].extract_text() or ''
         return text.strip()
     except Exception as e:
         raise Exception(f"Error al leer el archivo PDF {pdf_path}: {e}")
+
 
 # Función para procesar archivos PDF y extraer datos para la base de datos
 def process_files():
@@ -54,9 +62,7 @@ def process_files():
 
         # Verificamos que el archivo tenga exactamente tres partes (letra, actuacion, ejercicio)
         if len(parts) == 3:
-            letra = parts[0]
-            actuacion = parts[1]
-            ejercicio = parts[2]
+            letra, actuacion, ejercicio = parts
 
             # Validar que el año no sea mayor al año actual
             if ejercicio.isdigit() and int(ejercicio) <= current_year:
@@ -67,6 +73,7 @@ def process_files():
             invalid_files.append(file)
 
     return processed_files, invalid_files
+
 
 # Función para insertar en la base de datos y actualizar extractos
 def insert_and_update_db(processed_files):
@@ -117,10 +124,11 @@ def insert_and_update_db(processed_files):
             900999 AS Subtramite
         FROM Wilson2 a
         WHERE NOT EXISTS (
-            SELECT * FROM gestion..Maestro b 
+            SELECT 1 
+            FROM gestion..Maestro b 
             WHERE b.letra = a.letra 
-            AND b.actuacion = a.actuacion 
-            AND b.ejercicio = a.ejercicio
+              AND b.actuacion = a.actuacion 
+              AND b.ejercicio = a.ejercicio
         )
     """)
     conn.commit()
@@ -136,6 +144,7 @@ def insert_and_update_db(processed_files):
     cursor.close()
     conn.close()
 
+
 # Función para actualizar directamente el campo extracto
 def update_record(letra, actuacion, ejercicio, extracted_text, connection):
     """Actualiza los registros en la base de datos con el texto extraído del OCR."""
@@ -145,7 +154,9 @@ def update_record(letra, actuacion, ejercicio, extracted_text, connection):
     select_query = """
     SELECT extracto 
     FROM Maestro
-    WHERE letra = ? AND actuacion = ? AND ejercicio = ?
+    WHERE letra = ? 
+      AND actuacion = ? 
+      AND ejercicio = ?
     """
     
     print(f"Buscando registros en la base de datos para letra={letra}, actuacion={actuacion}, ejercicio={ejercicio}...")
@@ -158,30 +169,33 @@ def update_record(letra, actuacion, ejercicio, extracted_text, connection):
             extracto = row[0]
             print(f"Estado actual del campo 'extracto': {extracto}")
 
-            # Si el extracto es None o está vacío, lo inicializamos con la frase predefinida
+            # Si el extracto es None o está vacío, lo inicializamos
             if extracto is None or extracto.strip() == '':
                 new_extracto = f"Reconocimiento optico de caracteres: {extracted_text}"
             else:
-                # Si el extracto ya contiene la frase predefinida, concatenamos el nuevo texto después
+                # Si el extracto ya contiene la frase, concatenamos
                 if 'Reconocimiento optico de caracteres:' in extracto:
                     new_extracto = f"{extracto.strip()} {extracted_text}"
                 else:
-                    # Si no contiene la frase, la reemplazamos completamente
+                    # De lo contrario, reemplazamos el contenido
                     new_extracto = f"Reconocimiento optico de caracteres: {extracted_text}"
 
             print(f"Actualizando 'extracto' a: {new_extracto}")
 
-            # Actualización directa del registro con el nuevo extracto
+            # Actualización directa
             update_query = """
             UPDATE Maestro
             SET extracto = ?
-            WHERE letra = ? AND actuacion = ? AND ejercicio = ?
+            WHERE letra = ? 
+              AND actuacion = ? 
+              AND ejercicio = ?
             """
             cursor.execute(update_query, new_extracto, letra, actuacion, ejercicio)
             connection.commit()
             print(f"Registro actualizado para letra={letra}, actuacion={actuacion}, ejercicio={ejercicio}")
     else:
         print(f"No se encontró ningún registro para letra={letra}, actuacion={actuacion}, ejercicio={ejercicio}")
+
 
 # Función para manejar colisiones de nombres de archivo en el directorio de respaldo
 def handle_file_collision(file_path, backup_dir):
@@ -199,33 +213,59 @@ def handle_file_collision(file_path, backup_dir):
 
     return new_file_path
 
+
 # Función para limpiar y mover archivos procesados
 def clean_and_move_files(processed_files):
+    """
+    Mueve cada archivo procesado hacia su carpeta de año correspondiente:
+    \\fs01\Resoluciones\<ejercicio>
+    y mantiene una copia de seguridad en C:\Temp\Procesados\PDFs_BK.
+    """
     source_dir = r'\\fs01\Resoluciones_Temp'
     processed_dir = r'C:\Temp\Procesados'
     backup_dir = os.path.join(processed_dir, 'PDFs_BK')
-    year_dir = os.path.join(r'\\fs01\Resoluciones', str(datetime.now().year))
 
     if not os.path.exists(processed_dir):
         os.makedirs(processed_dir)
     if not os.path.exists(backup_dir):
         os.makedirs(backup_dir)
-    if not os.path.exists(year_dir):
-        os.makedirs(year_dir)
 
     timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     registro_path = os.path.join(processed_dir, f'registro_{timestamp}.txt')
 
-    with open(registro_path, 'w') as registro_file:
+    with open(registro_path, 'w', encoding='utf-8') as registro_file:
         registro_file.write(f"Proceso ejecutado el: {timestamp}\n")
         registro_file.write("Archivos procesados:\n")
-        for _, _, _, file in processed_files:
-            # Manejamos la colisión de archivos en el backup
+
+        for (letra, actuacion, ejercicio, file) in processed_files:
             src_path = os.path.join(r'C:\Temp', file)
-            dest_path = handle_file_collision(src_path, backup_dir)
-            shutil.copy(src_path, dest_path)
-            shutil.move(src_path, year_dir)
-            registro_file.write(f"{file} copiado a {dest_path} y movido a {year_dir}\n")
+
+            # Crea la carpeta basada en el año del archivo (ejercicio)
+            year_dir = os.path.join(r'\\fs01\Resoluciones', ejercicio)
+            if not os.path.exists(year_dir):
+                os.makedirs(year_dir)
+
+            # Realiza copia de seguridad
+            dest_backup_path = handle_file_collision(src_path, backup_dir)
+            shutil.copy(src_path, dest_backup_path)
+
+            # Mueve el archivo a la carpeta del año correspondiente
+            dest_path_year = os.path.join(year_dir, file)
+            # Opcional: manejar colisión también en year_dir si lo deseas
+            if os.path.exists(dest_path_year):
+                # Simple ejemplo de renombrado secuencial para evitar colisiones
+                file_name, file_ext = os.path.splitext(file)
+                counter = 1
+                while os.path.exists(dest_path_year):
+                    new_file = f"{file_name}_{counter}{file_ext}"
+                    dest_path_year = os.path.join(year_dir, new_file)
+                    counter += 1
+
+            shutil.move(src_path, dest_path_year)
+
+            registro_file.write(
+                f"{file} copiado en BK -> {dest_backup_path} y movido a {dest_path_year}\n"
+            )
 
     # Eliminar los archivos en el directorio original
     for subdir, dirs, files in os.walk(source_dir, topdown=False):
@@ -236,8 +276,10 @@ def clean_and_move_files(processed_files):
                     os.remove(full_file_name)
         for dir in dirs:
             dir_path = os.path.join(subdir, dir)
+            # Borra carpetas vacías
             if not os.listdir(dir_path):
                 os.rmdir(dir_path)
+
 
 # Función para generar log de archivos inválidos
 def generate_invalid_files_log(invalid_files):
@@ -248,12 +290,13 @@ def generate_invalid_files_log(invalid_files):
     log_path = os.path.join(log_dir, 'log_errores.txt')
     timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-    with open(log_path, 'a') as log_file:
+    with open(log_path, 'a', encoding='utf-8') as log_file:
         log_file.write(f"\nErrores encontrados el: {timestamp}\n")
         if invalid_files:
             log_file.write("Archivos con nombres incorrectos o años no válidos:\n")
             for file in invalid_files:
                 log_file.write(f"- {file}\n")
+
 
 # Flujo principal para ejecutar el proceso completo
 def main():
@@ -272,6 +315,6 @@ def main():
     else:
         print("No se encontraron archivos válidos para procesar.")
 
-# Ejecutar el script
+
 if __name__ == "__main__":
     main()
