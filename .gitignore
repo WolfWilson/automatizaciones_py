@@ -18,7 +18,7 @@ __pycache__/
 *.log
 *.sqlite3
 db.sqlite3
-
+borrado_fojas.log
 # Ignorar configuración de IDEs
 .vscode/
 .idea/
